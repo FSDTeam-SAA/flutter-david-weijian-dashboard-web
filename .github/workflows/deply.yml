@@ -2,7 +2,7 @@ name: Gh-Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -10,7 +10,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "stable"
+
       - uses: bluefireteam/flutter-gh-pages@v9
         with:
-          token: ${{ secrets.GH_TOKEN }}
+          targetBranch: "gh-pages"  # Ensure this branch exists or will be created
+          baseHref: "/"  # Adjust based on your project needs
