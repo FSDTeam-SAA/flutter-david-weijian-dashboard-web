@@ -76,6 +76,7 @@ class ContentController extends GetxController {
   Future<void> getAllRoutes(String id) async {
     isLoading.value = true;
     try {
+      testCentreId.value = id;
       final response = await _apiService.getAllRoutes(id);
       // print('API Response: $response'); // Debug log
       if (response['status'] == true) {
@@ -224,46 +225,6 @@ class ContentController extends GetxController {
     isEditing.value = true;
   }
 
-  Future<void> updateRoute() async {
-    try {
-      isLoading.value = true;
-
-      final data = {
-        "routeName": routeName.value,
-        "shareUrl": shareUrl.value,
-        "address": address.value,
-        "from": from.value,
-        "to": to.value,
-        "expectedTime": expectedTime.value,
-        "listOfStops": listOfStops.toList(),
-        "startCoordinator": {
-          "lat": listOfStops.first['lat'],
-          "lng": listOfStops.first['lng'],
-        },
-        "endCoordinator": {
-          "lat": listOfStops.last['lat'],
-          "lng": listOfStops.last['lng'],
-        },
-      };
-
-      final response = await _apiService.updateRoute(routeId.value, data);
-
-      if (response['status'] == true) {
-        Get.snackbar('Success', 'Route updated successfully');
-        isEditing.value = false;
-        resetRouteForm();
-        // Refresh the route list
-        await getAllRoutes(testCentreId.value);
-      } else {
-        throw Exception(response['message'] ?? 'Failed to update route');
-      }
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to update route: $e');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
   void resetRouteForm() {
     routeId.value = '';
     routeName.value = '';
@@ -298,7 +259,7 @@ class ContentController extends GetxController {
     routes.value = testCentre.routes;
     isEditing.value = true;
     showAddTestCentreButton.value = true;
-    showRouteDetails.value = false;
+    // showRouteDetails.value = false;
   }
 
   // Cancel editing
@@ -342,6 +303,49 @@ class ContentController extends GetxController {
     }
   }
 
+  // Update route
+  Future<void> updateRoute() async {
+    try {
+      isLoading.value = true;
+
+      final data = {
+        "routeName": routeName.value,
+        "shareUrl": shareUrl.value,
+        "address": address.value,
+        "from": from.value,
+        "to": to.value,
+        "expectedTime": expectedTime.value,
+        "listOfStops": listOfStops.toList(),
+        "startCoordinator": {
+          "lat": listOfStops.first['lat'],
+          "lng": listOfStops.first['lng'],
+        },
+        "endCoordinator": {
+          "lat": listOfStops.last['lat'],
+          "lng": listOfStops.last['lng'],
+        },
+      };
+
+      debugPrint("Data for route -> $data");
+
+      // final response = await _apiService.updateRoute(routeId.value, data);
+
+      // if (response['status'] == true) {
+      //   Get.snackbar('Success', 'Route updated successfully');
+      //   isEditing.value = false;
+      //   resetRouteForm();
+      //   // Refresh the route list
+      //   await getAllRoutes(testCentreId.value);
+      // } else {
+      //   throw Exception(response['message'] ?? 'Failed to update route');
+      // }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to update route: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // Delete test centre
   Future<void> deleteTestCentre(String id) async {
     isLoading.value = true;
@@ -372,6 +376,7 @@ class ContentController extends GetxController {
         if (testCentreId.value.isNotEmpty) {
           await getAllRoutes(testCentreId.value);
         }
+        await fetchAllTestCentres();
       } else {
         throw Exception(response['message'] ?? 'Failed to delete route');
       }

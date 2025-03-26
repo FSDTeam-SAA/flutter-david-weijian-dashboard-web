@@ -219,32 +219,6 @@ class ApiService {
     }
   }
 
-  // Update a test centre
-  Future<Map<String, dynamic>> updateTestCentre(
-    String id,
-    Map<String, dynamic> data,
-  ) async {
-    final token = await _secureStorage.getAccessToken();
-    try {
-      final response = await http.put(
-        Uri.parse('${ApiConstants.updateTestCentreEndpoint}/$id'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        body: json.encode(data),
-      );
-
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        throw Exception('Failed to update test centre: ${response.body}');
-      }
-    } catch (e) {
-      throw Exception('Failed to connect to the server: $e');
-    }
-  }
-
   // Delete test centre
   Future<Map<String, dynamic>> deleteTestCentre(String id) async {
     final token = await _secureStorage.getAccessToken();
@@ -268,27 +242,27 @@ class ApiService {
   }
 
   Future<Map<String, dynamic>> deleteRoute(String routeId) async {
-  final token = await _secureStorage.getAccessToken();
-  try {
-    final response = await http.delete(
-      Uri.parse('${ApiConstants.deleteRouteEndpoint}/$routeId'),
-      headers: {
+    final token = await _secureStorage.getAccessToken();
+    try {
+      final response = await http.delete(
+        Uri.parse('${ApiConstants.deleteRouteEndpoint}/$routeId'),
+        headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
         },
-    );
+      );
 
-    debugPrint("Delete Route Response: ${response.body}");
+      debugPrint("Delete Route Response: ${response.body}");
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Failed to delete route: ${response.body}');
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to delete route: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
     }
-  } catch (e) {
-    throw Exception('Failed to connect to the server: $e');
   }
-}
 
   // Update a route
   Future<Map<String, dynamic>> updateRoute(
@@ -309,6 +283,32 @@ class ApiService {
         return json.decode(response.body);
       } else {
         throw Exception('Failed to update route: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the server: $e');
+    }
+  }
+
+  // Update a test centre
+  Future<Map<String, dynamic>> updateTestCentre(
+    String id,
+    Map<String, dynamic> data,
+  ) async {
+    final token = await _secureStorage.getAccessToken();
+    try {
+      final response = await http.put(
+        Uri.parse('${ApiConstants.updateTestCentreEndpoint}/$id'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(data),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to update test centre: ${response.body}');
       }
     } catch (e) {
       throw Exception('Failed to connect to the server: $e');

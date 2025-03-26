@@ -1,6 +1,6 @@
 // lib/navbar/controllers/nav_controller.dart
 import 'package:david_weijian_dashboard/presentation/screens/auth/dashboard.dart';
-import 'package:david_weijian_dashboard/presentation/screens/nav_items/nav_content_screen.dart';
+import 'package:david_weijian_dashboard/presentation/screens/nav_items/nav_content/nav_content_screen.dart';
 import 'package:david_weijian_dashboard/presentation/screens/nav_items/nav_customer_support_feed_screen.dart';
 import 'package:david_weijian_dashboard/presentation/screens/nav_items/nav_feature_access_lim_screen.dart';
 import 'package:david_weijian_dashboard/presentation/screens/nav_items/nav_marketing_promotions_screen.dart';
