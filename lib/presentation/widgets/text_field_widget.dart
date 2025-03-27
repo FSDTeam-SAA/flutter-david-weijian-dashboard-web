@@ -5,12 +5,24 @@ class CustomTextField extends StatefulWidget {
   final ValueChanged<String> onChanged;
   final String? initialValue;
   final bool setInitialValueOnlyOnce;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final int? maxLines;
+  final bool obscureText;
+  final Widget? suffixIcon;
+  final InputDecoration? decoration;
 
   const CustomTextField({
     required this.label,
     required this.onChanged,
     this.initialValue,
     this.setInitialValueOnlyOnce = true,
+    this.validator,
+    this.keyboardType,
+    this.maxLines = 1,
+    this.obscureText = false,
+    this.suffixIcon,
+    this.decoration,
     super.key,
   });
 
@@ -21,6 +33,7 @@ class CustomTextField extends StatefulWidget {
 class _CustomTextFieldState extends State<CustomTextField> {
   late final TextEditingController _controller;
   bool _initialValueSet = false;
+  String? _errorText;
 
   @override
   void initState() {
@@ -35,10 +48,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   void didUpdateWidget(CustomTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
+    
+    // Handle initial value updates
     if (!widget.setInitialValueOnlyOnce && 
         widget.initialValue != oldWidget.initialValue) {
       _controller.text = widget.initialValue ?? '';
     }
+    
+    // Validate when validator changes
+    if (widget.validator != oldWidget.validator) {
+      _validate(_controller.text);
+    }
+  }
+
+  void _validate(String value) {
+    setState(() {
+      _errorText = widget.validator?.call(value);
+    });
   }
 
   @override
@@ -50,14 +76,25 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: TextField(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextFormField(
         controller: _controller,
-        decoration: InputDecoration(
+        decoration: widget.decoration ?? InputDecoration(
           labelText: widget.label,
           border: const OutlineInputBorder(),
+          errorText: _errorText,
+          suffixIcon: widget.suffixIcon,
         ),
-        onChanged: widget.onChanged,
+        keyboardType: widget.keyboardType,
+        maxLines: widget.maxLines,
+        obscureText: widget.obscureText,
+        onChanged: (value) {
+          widget.onChanged(value);
+          if (widget.validator != null) {
+            _validate(value);
+          }
+        },
+        validator: widget.validator,
       ),
     );
   }

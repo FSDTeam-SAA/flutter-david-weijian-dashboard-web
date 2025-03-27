@@ -271,6 +271,10 @@ class ApiService {
   ) async {
     final token = await _secureStorage.getAccessToken();
     try {
+
+      debugPrint("Data for update route -> $data");
+      // return data;
+      
       final response = await http.put(
         Uri.parse('${ApiConstants.updateRouteEndpoint}$id'),
         headers: {
@@ -281,7 +285,8 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         return json.decode(response.body);
-      } else {
+      } 
+      else {
         throw Exception('Failed to update route: ${response.body}');
       }
     } catch (e) {
@@ -296,6 +301,8 @@ class ApiService {
   ) async {
     final token = await _secureStorage.getAccessToken();
     try {
+      debugPrint("Data for update test centre -> $data");
+      // return data;
       final response = await http.put(
         Uri.parse('${ApiConstants.updateTestCentreEndpoint}/$id'),
         headers: {

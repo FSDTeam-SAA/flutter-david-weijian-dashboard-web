@@ -7,12 +7,8 @@ import 'package:get/get.dart';
 class RouteCard extends StatelessWidget {
   final RouteModel route;
   final ContentController controller;
-  
-  const RouteCard({
-    super.key,
-    required this.route,
-    required this.controller,
-  });
+
+  const RouteCard({super.key, required this.route, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +52,8 @@ class RouteCard extends StatelessWidget {
                   onPressed: () {
                     controller.showAddTestCentreButton.value = true;
                     controller.setSelectedRouteForEditing(route);
+                    // controller.showAddTestCentre.value = true;
+                    // controller.showRouteDetails.value = false;
                   },
                 ),
                 IconButton(

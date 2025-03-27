@@ -19,7 +19,7 @@ class RouteDetailsWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        children: [
           // Back button
           Center(
             child: ElevatedButton(
@@ -82,10 +82,18 @@ class RouteDetailsWidget extends StatelessWidget {
         // Add New Route Button
         ElevatedButton(
           onPressed: () {
+            // Reset the form first
+            controller.resetRouteForm();
+
+            // Set route mode
+            controller.routeId.value = ''; // Empty for new route
             controller.testCentreId.value = testCentre.id;
             controller.testCentreName.value = testCentre.name;
+
+            // Show the route form
+            controller.showAddTestCentre.value = true;
             controller.showAddTestCentreButton.value = true;
-            controller.showAddTestCentre.value = false;
+            controller.addNewRoute.value = true;
           },
           child: const Text('Add New Route'),
         ),

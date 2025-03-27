@@ -2,6 +2,7 @@ import 'package:david_weijian_dashboard/model/route_model.dart';
 import 'package:david_weijian_dashboard/model/test_centre_model.dart';
 import 'package:david_weijian_dashboard/services/api_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:xml/xml.dart' as xml;
@@ -42,6 +43,8 @@ class ContentController extends GetxController {
   var isEditing = false.obs;
 
   var testCentres = <TestCentre>[].obs; // List of test centres
+
+  var addNewRoute = false.obs;
 
   final ApiService _apiService = ApiService();
 
@@ -204,7 +207,8 @@ class ContentController extends GetxController {
 
   // In ContentController class
   void setSelectedRouteForEditing(RouteModel route) {
-    testCentreId.value = route.testCentreId;
+    testCentreId.value = "";
+
     routeId.value = route.id;
     routeName.value = route.routeName;
     shareUrl.value = route.shareUrl;
@@ -259,7 +263,19 @@ class ContentController extends GetxController {
     routes.value = testCentre.routes;
     isEditing.value = true;
     showAddTestCentreButton.value = true;
-    // showRouteDetails.value = false;
+    showRouteDetails.value = false;
+    showAddTestCentre.value = true;
+
+
+    final data = {
+      "name": testCentreName.value,
+      "address": testCentreAddress.value,
+      "postCode": postCode.value,
+      "passRate": passRate.value,
+      "routes": routes.value,
+    };
+
+    debugPrint(wrapWidth: 1024, "Data for test center -> $data");
   }
 
   // Cancel editing
@@ -282,13 +298,14 @@ class ContentController extends GetxController {
       "routes": routes.value,
     };
 
-    debugPrint("Data for test center -> ${testCentreId.value}");
+    debugPrint("Data for test center -> ${data}");
 
     try {
       final response = await _apiService.updateTestCentre(
         testCentreId.value,
         data,
       );
+      debugPrint(wrapWidth: 1024, "Response for test center data -> $response");
       if (response['status'] == true) {
         Get.snackbar('Success', 'Test Centre updated successfully');
         await fetchAllTestCentres();
@@ -328,17 +345,17 @@ class ContentController extends GetxController {
 
       debugPrint("Data for route -> $data");
 
-      // final response = await _apiService.updateRoute(routeId.value, data);
+      final response = await _apiService.updateRoute(routeId.value, data);
 
-      // if (response['status'] == true) {
-      //   Get.snackbar('Success', 'Route updated successfully');
-      //   isEditing.value = false;
-      //   resetRouteForm();
-      //   // Refresh the route list
-      //   await getAllRoutes(testCentreId.value);
-      // } else {
-      //   throw Exception(response['message'] ?? 'Failed to update route');
-      // }
+      if (response['status'] == true) {
+        Get.snackbar('Success', 'Route updated successfully');
+        isEditing.value = false;
+        resetRouteForm();
+        // Refresh the route list
+        await getAllRoutes(testCentreId.value);
+      } else {
+        throw Exception(response['message'] ?? 'Failed to update route');
+      }
     } catch (e) {
       Get.snackbar('Error', 'Failed to update route: $e');
     } finally {
